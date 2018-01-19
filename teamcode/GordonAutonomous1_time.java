@@ -78,7 +78,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Gordon: DriveByTime8", group="Pushbot")
+@Autonomous(name="Gordon: DriveByTime10", group="Pushbot")
 
 public class GordonAutonomous1_time extends LinearOpMode {
 
@@ -111,38 +111,36 @@ public class GordonAutonomous1_time extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         
+        int pos = 5;
         
-        // Step 1:  Drive forward for 3 seconds
-        robot.leftDrive.setPower(FORWARD_SPEED);
-        robot.rightDrive.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
+        if (pos == 1) {
+            //pos 1 (red top)        
+            drive (FORWARD_SPEED, 2.0);
+            turn(-90);
+            drive (FORWARD_SPEED, 0.25);
+        } else if (pos == 2) {
+            drive (FORWARD_SPEED, 1.1);
+            turn(90); //left
+            drive (FORWARD_SPEED, 0.7);
+            turn(0);//right
+            drive (FORWARD_SPEED, 0.6);
+        } else if (pos == 3) {
+            //pos 3 (blue top)        
+            drive (-FORWARD_SPEED, 2.0);
+            turn(-90);
+            drive (FORWARD_SPEED, 0.25);
+        } else if (pos ==4) {
+            drive (-FORWARD_SPEED, 1.1);
+            turn(90); //left
+            drive (FORWARD_SPEED, 0.7);
+            turn(180);//right
+            drive (FORWARD_SPEED, 0.6);
+        } else if (pos == 5){
+            turn(-90);
+
         }
         
-        turn(-90);
-        
-
-        // Step 3:  Drive forward
-        robot.leftDrive.setPower(FORWARD_SPEED);
-        robot.rightDrive.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.25)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-/*
-        // Step 3:  Drive Backwards for 1 Second
-        robot.leftDrive.setPower(-FORWARD_SPEED);
-        robot.rightDrive.setPower(-FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-            telemetry.addData("Path", "Leg 3: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
+       /*
         // Step 4:  Stop and close the claw.
         robot.leftDrive.setPower(0);
         robot.rightDrive.setPower(0);
@@ -181,36 +179,25 @@ public class GordonAutonomous1_time extends LinearOpMode {
     }
     
     void turn (double new_heading) {
-       
-       turn_phase (new_heading, 0.3, 10);
-       turn_phase (new_heading, 0.1, 1);
-     /*   while (opModeIsActive()) {
-            double heading = getHeading();
-            double diff = heading - new_heading ;
-            
-            if (diff > -0.05 && diff < 0.05)
-                break;
-
-            robot.leftDrive.setPower(-TURN_SPEED);
-            robot.rightDrive.setPower(TURN_SPEED);
-            telemetry.addData("Heading", "%f", heading);
-            telemetry.addData("bearing","%f", new_heading);
-            telemetry.addData("diff","%f", diff);
-            telemetry.update();
-        }*/
+        double cur_head = getHeading();
+        double speed_dir = 1;
+        if ((new_heading - cur_head) <= 180)
+            speed_dir = -1;
+       turn_phase (new_heading, speed_dir * 0.3, 10);
+       turn_phase (new_heading, speed_dir * 0.2, 1);
     }
 
     void turn_phase (double new_heading, double turn_speed, double accepted_diff) {
-        
+        robot.leftDrive.setPower(-turn_speed);
+        robot.rightDrive.setPower(turn_speed);      
         while (opModeIsActive()) {
             double heading = getHeading();
             double diff = heading - new_heading ;
             
-            if (diff > -accepted_diff && diff < accepted_diff)
+            if (diff >= -accepted_diff && diff <= accepted_diff)
                 break;
 
-            robot.leftDrive.setPower(-turn_speed);
-            robot.rightDrive.setPower(turn_speed);
+
             telemetry.addData("Heading", "%f", heading);
             telemetry.addData("bearing","%f", new_heading);
             telemetry.addData("diff","%f", diff);
@@ -218,7 +205,20 @@ public class GordonAutonomous1_time extends LinearOpMode {
             telemetry.addData("turn_speed","%f", turn_speed);
             telemetry.update();
         }
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);      
     }
 
+    void drive (double speed, double time) {
+        robot.leftDrive.setPower(speed);
+        robot.rightDrive.setPower(speed);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < time)) {
+            telemetry.addData("speed", "%f", speed);
+            telemetry.addData("Time", "%2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+
+    }
 
 }
