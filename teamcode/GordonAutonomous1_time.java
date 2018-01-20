@@ -116,7 +116,7 @@ public class GordonAutonomous1_time extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         
-        int pos = 7;
+        int pos = 5;
         
         // 1 = Blue
         int our_color = BLUE ;
@@ -144,12 +144,12 @@ public class GordonAutonomous1_time extends LinearOpMode {
             turn(180);//right
             drive (FORWARD_SPEED, 0.6);
         } else if (pos == 5){
-            turn(-90);
+            turn_phase(-90, 2, 10);
         } else if (pos == 6 ) {
             move_flicker (0.95); //flickr down
             move_flicker (0.25); // flickr up
         } else if (pos == 7 ) {
-            
+            // flickr + colorsensor + ball sequence
             move_flicker (1); //flickr down
             int detected_color = read_flicker_color();
             if (detected_color != UNKNOWN_COLOR) {
@@ -159,6 +159,13 @@ public class GordonAutonomous1_time extends LinearOpMode {
                 
             }
             move_flicker (0.25); // flickr up
+        } else if (pos == 8) {
+            // close claws on pre-positioned glyph
+            robot.leftClaw.setPosition (0.7);
+            robot.rightClaw.setPosition (0.2);
+            robot.leftArm.setPower(0.2);
+            just_wait(1);
+            robot.leftArm.setPower(0);
         }
         
        /*
