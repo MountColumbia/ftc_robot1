@@ -136,7 +136,7 @@ public class GordonTeleOpSingleController extends LinearOpMode {
                 third_servo -= CLAW_SPEED;
 
             third_servo = Range.clip(third_servo, -0.5, 0.5);
-            robot.thirdServo.setPosition(robot.MID_SERVO + third_servo);
+            robot.flickrServo.setPosition(robot.MID_SERVO + third_servo);
 
             // Gordon: Fourth Servo
             if (gamepad1.right_bumper)

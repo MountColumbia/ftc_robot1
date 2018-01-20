@@ -88,6 +88,11 @@ public class GordonAutonomous1_time extends LinearOpMode {
 
     static final double     FORWARD_SPEED = 0.6;
     static final double     TURN_SPEED    = 0.3;
+    
+    static final int        UNKNOWN_COLOR = 0 ;
+    static final int        BLUE = 1 ;
+    static final int        RED = 2 ;
+    
     // The IMU sensor object
     BNO055IMU imu;
     
@@ -111,7 +116,10 @@ public class GordonAutonomous1_time extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         
-        int pos = 5;
+        int pos = 7;
+        
+        // 1 = Blue
+        int our_color = BLUE ;
         
         if (pos == 1) {
             //pos 1 (red top)        
@@ -137,7 +145,20 @@ public class GordonAutonomous1_time extends LinearOpMode {
             drive (FORWARD_SPEED, 0.6);
         } else if (pos == 5){
             turn(-90);
-
+        } else if (pos == 6 ) {
+            move_flicker (0.95); //flickr down
+            move_flicker (0.25); // flickr up
+        } else if (pos == 7 ) {
+            
+            move_flicker (1); //flickr down
+            int detected_color = read_flicker_color();
+            if (detected_color != UNKNOWN_COLOR) {
+                
+                Boolean drive_forward = (our_color != detected_color) ;
+                flickr_drive (drive_forward);
+                
+            }
+            move_flicker (0.25); // flickr up
         }
         
        /*
@@ -218,7 +239,52 @@ public class GordonAutonomous1_time extends LinearOpMode {
             telemetry.addData("Time", "%2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+    }
+    
+    void just_wait (double timeout) {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < timeout)) {
+        }
     }
 
+    void move_flicker(double new_position) {
+        robot.flickrServo.setPosition(new_position);
+        // There is no way to read the actual servo position,
+        // So give it 2 seconds to complete the move.
+        just_wait (2);
+    }
+    
+    /* Return: 2 if RED detected
+               1 if BLUE detected
+               0 if unable to determine color */
+    int read_flicker_color () {
+        // Ugly hack: give the color sensor one more second
+        // to read stable values (assuming the flickr arm stopped swining).
+        // A better way (in the future) would be to read the actual
+        // values and see when they stabilize.
+        just_wait (1);
+        
+        int red = robot.color_sensor.red();
+        int blue = robot.color_sensor.blue();
+        
+        if (red>2 && blue>2 && (red*2/3 > blue))
+            return RED;
+        if (red>2 && blue>2 && (blue*3/4 > red))
+            return BLUE;
+        
+        return UNKNOWN_COLOR;
+    }
+
+    
+   void flickr_drive (Boolean move_forward) {
+       double speed = 0.2 ;
+       if (!move_forward)
+          speed = speed * -1 ;
+        drive (speed, 0.5);
+        //Don't bother returning to the original position
+        //drive (-speed,0.5);
+   }
+    
 }

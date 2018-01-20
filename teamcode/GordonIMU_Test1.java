@@ -54,7 +54,7 @@ import java.util.Locale;
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Gordon IMU Test3", group = "Sensor")
+@Autonomous(name = "Gordon IMU Test7", group = "Sensor")
 
 public class GordonIMU_Test1 extends LinearOpMode
     {
@@ -64,6 +64,9 @@ public class GordonIMU_Test1 extends LinearOpMode
 
     // The IMU sensor object
     BNO055IMU imu;
+
+    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
+
 
     // State used for updating telemetry
     //Orientation angles;
@@ -78,6 +81,8 @@ public class GordonIMU_Test1 extends LinearOpMode
         setupIMU();
         // Set up our telemetry dashboard
         //composeTelemetry();
+        
+        robot.init(hardwareMap);
 
         // Wait until we're told to go
         waitForStart();
@@ -91,6 +96,24 @@ public class GordonIMU_Test1 extends LinearOpMode
             //String heading = formatAngle(angles.angleUnit, angles.firstAngle);
             double heading = getHeading();
             telemetry.addData("heading", "%f", heading);
+            
+            int red = robot.color_sensor.red();
+            telemetry.addData("red","%d",red);
+            int blue = robot.color_sensor.blue();
+            telemetry.addData("blue","%d",blue);
+            int alpha = robot.color_sensor.alpha();
+            telemetry.addData("alpha","%d",alpha);
+            
+            int color = read_flicker_color();
+            String sc = "";
+            if (color == 0)
+                sc = "unknown color";
+            else if (color == 1)
+                sc = "blue";
+            else if (color == 2)
+                sc = "red";
+            telemetry.addData("detected color","%s",sc);
+
             telemetry.update();
         }
     }
@@ -193,5 +216,25 @@ public class GordonIMU_Test1 extends LinearOpMode
 
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
+    
+    /* Return: 2 if RED detected
+               1 if BLUE detected
+               0 if unable to determine color */
+    int read_flicker_color () {
+        // Ugly hack: give the color sensor one more second
+        // to read stable values (assuming the flickr arm stopped swining).
+        // A better way (in the future) would be to read the actual
+        // values and see when they stabilize.
+        
+        int red = robot.color_sensor.red();
+        int blue = robot.color_sensor.blue();
+        
+        if (red>2 && blue>2 && (red*2/3 > blue))
+            return 2;
+        if (red>2 && blue>2 && (blue*2/3 > red))
+            return 1;
+        
+        return 0;
     }
 }

@@ -34,6 +34,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+// See: https://ftc-tricks.com/overview-color-sensor/
+import com.qualcomm.robotcore.hardware.ColorSensor;
+
 /**
  * This is NOT an opmode.
  *
@@ -60,9 +63,10 @@ public class HardwarePushbot
 
     public Servo    leftClaw    = null;
     public Servo    rightClaw   = null;
-    public Servo    thirdServo   = null; //gordon
+    public Servo    flickrServo   = null; //gordon
     public Servo    fourthServo  = null; //gordon
 
+    public ColorSensor color_sensor; //gordon
     
 
     public static final double MID_SERVO       =  0.5 ;
@@ -104,21 +108,25 @@ public class HardwarePushbot
         // Define and initialize ALL installed servos.
         leftClaw  = hwMap.get(Servo.class, "left_hand");
         rightClaw = hwMap.get(Servo.class, "right_hand");
-        leftClaw.setPosition(MID_SERVO);
-        rightClaw.setPosition(MID_SERVO);
+        
+        //leftClaw.setPosition(MID_SERVO);
+        //rightClaw.setPosition(MID_SERVO);
 
         // Gordon: Third Servo
-        thirdServo = hwMap.get(Servo.class, "third_servo");
-        thirdServo.setPosition(MID_SERVO);
+        flickrServo = hwMap.get(Servo.class, "third_servo");
+        //thirdServo.setPosition(MID_SERVO);
 
         // Gordon: Fourth Servo
         fourthServo = hwMap.get(Servo.class, "fourth_servo");
-        fourthServo.setPosition(MID_SERVO);
+        //fourthServo.setPosition(MID_SERVO);
 
         //Gordon: Fourth Motor
         fourthMotor  = hwMap.get(DcMotor.class, "fourth_motor");
         fourthMotor.setPower(0);
         fourthMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        
+        // Gordon: Color Sensor
+        color_sensor = hwMap.get(ColorSensor.class, "color");
     }
  }
 
