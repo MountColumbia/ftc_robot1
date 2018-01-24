@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Gordon: Dual Controllers 1", group="Pushbot")
+@TeleOp(name="Dual Controllers", group="Pushbot")
 
 public class GordonTeleOpDualControllers extends LinearOpMode {
 
