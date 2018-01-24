@@ -48,7 +48,8 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: Teleop POV", group="Pushbot")
+@Disabled
+//@TeleOp(name="Pushbot: Teleop POV", group="Pushbot")
 
 public class STUCODE extends LinearOpMode {
 

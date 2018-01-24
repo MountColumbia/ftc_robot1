@@ -61,8 +61,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
  * The code assumes that you do NOT have encoders on the wheels,
  *   otherwise you would use: PushbotAutoDriveByEncoder;
  */
-
-@Autonomous(name="Gordon: Autonomous 2", group="Pushbot")
+@Disabled
+//@Autonomous(name="Gordon: Autonomous 2", group="Pushbot")
 
 public class GordonAutonomous2 extends LinearOpMode {
 
@@ -103,11 +103,11 @@ public class GordonAutonomous2 extends LinearOpMode {
         int pos = 5;
 
         int our_color = RED ;
-	if (pos == 3 || pos == 4)
-	    our_color = BLUE ;
+    if (pos == 3 || pos == 4)
+        our_color = BLUE ;
 
-	claws_grab_glyph ();
-	jewel_sequence (our_color);
+    claws_grab_glyph ();
+    jewel_sequence (our_color);
 
         if (pos == 1) {
             //pos 1 (red top)
@@ -115,7 +115,7 @@ public class GordonAutonomous2 extends LinearOpMode {
             turn(-90);
             drive (FORWARD_SPEED, 0.25);
         } else if (pos == 2) {
-	    //pos 2 (red bottom)
+        //pos 2 (red bottom)
             drive (FORWARD_SPEED, 1.1);
             turn(90); //left
             drive (FORWARD_SPEED, 0.7);
@@ -127,15 +127,15 @@ public class GordonAutonomous2 extends LinearOpMode {
             turn(-90);
             drive (FORWARD_SPEED, 0.25);
         } else if (pos ==4) {
-	    //pos 4 (blue bottom)
+        //pos 4 (blue bottom)
             drive (-FORWARD_SPEED, 1.1);
             turn(90); //left
             drive (FORWARD_SPEED, 0.7);
             turn(180);//right
             drive (FORWARD_SPEED, 0.6);
-	}
+    }
 
-	claws_release_glyph ();
+    claws_release_glyph ();
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -258,28 +258,28 @@ public class GordonAutonomous2 extends LinearOpMode {
 
 
     void claws_grab_glyph() {
-	// close claws on pre-positioned glyph
-	robot.leftClaw.setPosition (0.7);
-	robot.rightClaw.setPosition (0.2);
-	robot.leftArm.setPower(0.2);
-	just_wait(1);
-	robot.leftArm.setPower(0);
+    // close claws on pre-positioned glyph
+    robot.leftClaw.setPosition (0.7);
+    robot.rightClaw.setPosition (0.2);
+    robot.leftArm.setPower(0.2);
+    just_wait(1);
+    robot.leftArm.setPower(0);
     }
 
     void claws_release_glyph () {
-	robot.leftClaw.setPosition (0.5);
-	robot.rightClaw.setPosition (0.5);
+    robot.leftClaw.setPosition (0.5);
+    robot.rightClaw.setPosition (0.5);
     }
 
 
     void jewel_sequence (int our_color) {
-	// flickr + colorsensor + jewel sequence
-	move_flicker (1); //flickr down
-	int detected_color = read_flicker_color();
-	if (detected_color != UNKNOWN_COLOR) {
-	    Boolean drive_forward = (our_color != detected_color) ;
-	    flickr_drive (drive_forward);
-	}
-	move_flicker (0.25); // flickr up
+    // flickr + colorsensor + jewel sequence
+    move_flicker (1); //flickr down
+    int detected_color = read_flicker_color();
+    if (detected_color != UNKNOWN_COLOR) {
+        Boolean drive_forward = (our_color != detected_color) ;
+        flickr_drive (drive_forward);
+    }
+    move_flicker (0.25); // flickr up
     }
 }
