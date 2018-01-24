@@ -29,12 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 
 @Autonomous(name="Autonomous: Position 2", group="Pushbot")
-public class Autonomous_Pos1 extends AutonomousBase {
+public class Autonomous_Pos2 extends AutonomousBase {
 
     @Override
     public void runOpMode() {
-	run_autonomous_program (2);
+    run_autonomous_program (2);
     }
 }
